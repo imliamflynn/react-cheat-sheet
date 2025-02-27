@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { useState } from "react";
+
 
 function Garage(props) {
   const cars = props.cars;
@@ -58,6 +60,28 @@ function Garage2() {
   );
 }
 
+function MyForm() {
+  const [name, setName] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); //Stops page from refreshing
+    alert(`The name you entered was: ${name}`);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>Enter your name:
+        <input 
+          type="text" 
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <input type="submit" />
+    </form>
+  )
+}
+
 const cars = ['Ford', 'BMW', 'Audi'];
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Garage cars={cars} />);
@@ -67,3 +91,6 @@ root2.render(<Goal isGoal={true} />);
 
 const root3 = ReactDOM.createRoot(document.getElementById('root3'));
 root3.render(<Garage2 />);
+
+const root4 = ReactDOM.createRoot(document.getElementById('root4'));
+root4.render(<MyForm />);
