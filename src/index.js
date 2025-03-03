@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import Comp from "./Comp.js";
 // Named exports must be destructured using curly braces.
 import { name, age } from "./person.js";
 // Default exports do not.
@@ -65,6 +66,31 @@ const conditional = <h1>{text}</h1>;
 
 // Or you could use a ternary expression inside JSX.
 const myElement = <h1>{(x) < 10 ? "Hello" : "Goodbye"}</h1>;
+
+// -------------------------------------------------------------------------------------------------------------
+// FUNCTION COMPONENTS
+// -------------------------------------------------------------------------------------------------------------
+// Components are like functions that return HTML elements. You can have components inside
+// other components (see App component at bottom).
+// React is all about re-using code, and it is recommended to split your components into
+// separate files. See Comp.js for example. Note that the filename must start with an uppercase
+// character. I have imported the Comp.js file in the application (see import statement up top),
+// now we can use it as if it was created here.
+
+// A component's name MUST start with an upper case letter or it won't work. To use this
+// component in your application, use similar syntax as normal HTML: <FirstComponent />
+function FirstComponent() {
+  return <h2>Hi, I am a function component!</h2>;
+}
+
+class GrossComponent extends React.Component {
+  render() {
+    return <h4>Hi, I am a class component. Never use me.</h4>;
+  }
+}
+
+
+
 
 // -------------------------------------------------------------------------------------------------------------
 // CLASSES
@@ -261,9 +287,13 @@ authenticated ? renderApp() : renderLogin();
 
 
 
+
+
+
+
 const title = <h1>React Cheat Sheet</h1>;
 
-// Function Component which renders to "root" div in HTML.
+// Function component which returns HTML code.
 function App() {
   return (
     <>
@@ -272,6 +302,9 @@ function App() {
       {elementWithoutJSX}
       {expressionElement}
       {fruitBowl}
+      <FirstComponent />
+      <Comp />
+      <GrossComponent />
       {myCar.info()}<br />
       {myCar.show()}<br />
       {hello()}<br />
@@ -283,5 +316,6 @@ function App() {
   );
 }
 
+// Creates root on defined HTML element.
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+root.render(<App />); // Renders HTML code from App() to root node.
