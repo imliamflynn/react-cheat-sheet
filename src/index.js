@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Comp from "./Comp.js";
-// Named exports must be destructured using curly braces.
-import { name, age } from "./person.js";
-// Default exports do not.
-import message from "./message.js";
+import Comp from "./Comp.js"; // Component in seperate file.
+import { name, age } from "./person.js"; // Named exports must be destructured using curly braces.
+import message from "./message.js"; // Default exports do not.
 
 // -------------------------------------------------------------------------------------------------------------
 // VARIABLES / JSX
@@ -89,6 +87,36 @@ class GrossComponent extends React.Component {
   }
 }
 
+// -------------------------------------------------------------------------------------------------------------
+// PROPS (PROPERTIES)
+// -------------------------------------------------------------------------------------------------------------
+// Props are arguments passed into React components.
+// You can send variables/objects as props by wrapping the variable in curly brackets {}.
+// Props are read only! You will get an error if you try to change their value.
+
+// To send props into a component, use the same syntax as HTML attributes: <Supermarket brand="Pak n Save" />
+function Supermarket(props) {
+  return <h2>I am {props.brand}!</h2>;
+}
+
+// You can pass data from one component to another e.g. send brand from Garage to Truck.
+function Truck(props) {
+  return <h2>I am a {props.brand.model}!</h2>;
+}
+
+function Garage() {
+  const carInfo = { name: "Ford", model: "F-150" };
+  return (
+    <>
+      <h1>Who lives in my garage?</h1>
+      <Truck brand={carInfo} />
+    </>
+  );
+}
+
+// -------------------------------------------------------------------------------------------------------------
+// EVENTS
+// -------------------------------------------------------------------------------------------------------------
 
 
 
@@ -305,6 +333,7 @@ function App() {
       <FirstComponent />
       <Comp />
       <GrossComponent />
+      <Supermarket brand="Pak n Save" />
       {myCar.info()}<br />
       {myCar.show()}<br />
       {hello()}<br />
