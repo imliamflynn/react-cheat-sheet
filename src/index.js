@@ -1,5 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+// Named exports must be destructured using curly braces.
+import { name, age } from "./person.js";
+// Default exports do not.
+import message from "./message.js";
 
 // -------------------------------------------------------------------------------------------------------------
 // VARIABLES
@@ -144,6 +148,55 @@ myVehicle2(vehicleTwo)
 function myVehicle2({ model, registration: { state } }) {
   const message = 'My ' + model + ' is registered in ' + state + '.';
 }
+
+// -------------------------------------------------------------------------------------------------------------
+// SPREAD OPERATOR
+// -------------------------------------------------------------------------------------------------------------
+
+// The JavaScript spread operator (...) allows us to quickly copy all or 
+// part of an existing array or object into another array or object.
+const numbersOne = [1, 2, 3];
+const numbersTwo = [4, 5, 6];
+const numbersCombined = [...numbersOne, ...numbersTwo];
+
+// The spread operator is often used in combination with destructuring.
+const numbers = [1, 2, 3, 4, 5, 6];
+
+// Assign the first and second items from numbers to variables and put the rest in an array.
+const [one, two, ...rest] = numbers;
+
+// We can use the spread operator with objects too:
+const myVehicleObj = {
+  brand: 'Ford',
+  model: 'Mustang',
+  color: 'red'
+}
+
+const updateMyVehicle = {
+  type: 'car',
+  year: 2021,
+  color: 'yellow'
+}
+
+const myUpdatedVehicle = { ...myVehicleObj, ...updateMyVehicle }
+console.log(myUpdatedVehicle);
+// Check the result object in the console. Notice the properties that did not match were
+// combined, but the property that did match, color, was overwritten by the last object
+// that was passed, updateMyVehicle. The resulting color is now yellow.
+
+// -------------------------------------------------------------------------------------------------------------
+// MODULES
+// -------------------------------------------------------------------------------------------------------------
+
+// Named Exports - You can export a function or variable from any file. I have
+// created a file named person.js, and filled it with things we want to export.
+
+// Default Exports - I have created another file, named message.js, and used it for
+// demonstrating default export. You can only have one default export in a file.
+
+// See top of file for imports.
+
+
 
 
 
