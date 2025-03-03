@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Comp from "./Comp.js"; // Component in seperate file.
 import { name, age } from "./person.js"; // Named exports must be destructured using curly braces.
 import message from "./message.js"; // Default exports do not.
+import Comp from "./Comp.js"; // Component in seperate file.
+import { useState } from 'react';
 
 // -------------------------------------------------------------------------------------------------------------
 // VARIABLES / JSX
@@ -68,12 +69,12 @@ const myElement = <h1>{(x) < 10 ? "Hello" : "Goodbye"}</h1>;
 // -------------------------------------------------------------------------------------------------------------
 // FUNCTION COMPONENTS
 // -------------------------------------------------------------------------------------------------------------
+// IT IS RECOMMENDED TO SPLIT YOUR COMPONENTS INTO SEPARATE FILES. React is all about re-using
+// code. See Comp.js for example. Note that the filename must start with an uppercase character.
+// I have imported the Comp.js file in the application (see import statement up top), now we can
+// use it as if it was created here.
 // Components are like functions that return HTML elements. You can have components inside
 // other components (see App component at bottom).
-// React is all about re-using code, and it is recommended to split your components into
-// separate files. See Comp.js for example. Note that the filename must start with an uppercase
-// character. I have imported the Comp.js file in the application (see import statement up top),
-// now we can use it as if it was created here.
 
 // A component's name MUST start with an upper case letter or it won't work. To use this
 // component in your application, use similar syntax as normal HTML: <FirstComponent />
@@ -86,6 +87,18 @@ class GrossComponent extends React.Component {
     return <h4>Hi, I am a class component. Never use me.</h4>;
   }
 }
+
+// -------------------------------------------------------------------------------------------------------------
+// MODULES
+// -------------------------------------------------------------------------------------------------------------
+
+// Named Exports - You can export a function or variable from any file. I have
+// created a file named person.js, and filled it with things we want to export.
+
+// Default Exports - I have created another file, named message.js, and used it for
+// demonstrating default export. You can only have one default export in a file.
+
+// See top of file for imports.
 
 // -------------------------------------------------------------------------------------------------------------
 // PROPS (PROPERTIES)
@@ -189,8 +202,153 @@ function Goal2(props) {
 
 // root.render(<Goal isGoal={false} />);
 
+// -------------------------------------------------------------------------------------------------------------
+// LISTS / .map()
+// -------------------------------------------------------------------------------------------------------------
+// The .map() method allows you to run a function on each item in the array
 
+const myArray = ['apple', 'banana', 'orange'];
 
+// .map() method used to make a list from the above array.
+// When you run this code it will work but you will receive a warning
+// that there is no "key" provided for the list items.
+const myList = myArray.map((item) => <li>{item}</li>)
+
+function CarList(props) {
+  return <li>I am a {props.brand}</li>;
+}
+
+// Keys allow React to keep track of elements. This way, if an item is updated or removed,
+// only that item will be re-rendered instead of the entire list. Keys need to be unique
+// to each sibling. But they can be duplicated globally.
+function GarageList() {
+  const cars = [
+    { id: 1, brand: 'Ford' },
+    { id: 2, brand: 'BMW' },
+    { id: 3, brand: 'Audi' }
+  ];
+  return (
+    <>
+      <h1>Who lives in my garage?</h1>
+      <ul>
+        {cars.map((car) => <CarList key={car.id} brand={car.brand} />)}
+      </ul>
+    </>
+  );
+}
+
+// root.render(<GarageList />);
+
+// -------------------------------------------------------------------------------------------------------------
+// FORMS
+// -------------------------------------------------------------------------------------------------------------
+// You add a form in React like any other element. Normally the form will submit and the page
+// will refresh. But this is generally not what we want to happen in React. We want to prevent
+// this default behavior and let React control the form.
+
+// Uses component state to store data. MUST HAVE import { useState } from 'react'.
+function MyForm() {
+  const [name, setName] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevents default submit and refresh.
+    alert(`The name you entered was: ${name}`)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>Enter your name:
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <input type="submit" />
+    </form>
+  )
+}
+
+// You can control the values of more than one input field by adding a name attribute to each element.
+// We will initialize our state with an empty object. To access the fields in the event handler use
+// the event.target.name and event.target.value syntax. To update the state, use square brackets [] 
+// notation around the property name.
+function MultipleInputFieldsForm() {
+  const [inputs, setInputs] = useState({});
+
+  // We use the same event handler function for both input fields, we could write one event handler
+  // for each, but this gives us much cleaner code and is the preferred way in React.
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs(values => ({ ...values, [name]: value }))
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    alert(inputs);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>Enter your name:
+        <input
+          type="text"
+          name="username"
+          value={inputs.username || ""}
+          onChange={handleChange}
+        />
+      </label>
+      <label>Enter your age:
+        <input
+          type="number"
+          name="age"
+          value={inputs.age || ""}
+          onChange={handleChange}
+        />
+      </label>
+      <input type="submit" />
+    </form>
+  )
+}
+
+// Textarea is different in React from HTML. the value of a textarea is placed in a value
+// attribute. We'll use the useState Hook to manage the value of the textarea.
+function Textarea() {
+  const [textarea, setTextarea] = useState(
+    "The content of a textarea goes in the value attribute"
+  );
+
+  const handleChange = (event) => {
+    setTextarea(event.target.value)
+  }
+
+  return (
+    <form>
+      <textarea value={textarea} onChange={handleChange} />
+    </form>
+  )
+}
+
+// Select is different in React from HTML. The selected value is defined with a
+// value attribute on the select tag.
+function Select() {
+  const [myCar, setMyCar] = useState("Volvo");
+
+  const handleChange = (event) => {
+    setMyCar(event.target.value)
+  }
+
+  return (
+    <form>
+      <select value={myCar} onChange={handleChange}>
+        <option value="Ford">Ford</option>
+        <option value="Volvo">Volvo</option>
+        <option value="Fiat">Fiat</option>
+      </select>
+    </form>
+  )
+}
 
 // -------------------------------------------------------------------------------------------------------------
 // CLASSES
@@ -224,46 +382,6 @@ class Model extends Car {
 
 // Object created using the Model class.
 const myCar = new Model("Ford", "Mustang");
-
-// -------------------------------------------------------------------------------------------------------------
-// ARROW FUNCTIONS
-// -------------------------------------------------------------------------------------------------------------
-
-// Arrow function syntax. Instead of hello = function() {... or function hello() {...
-let hello = () => {
-  return "Hello World!";
-}
-
-// Arrow function can be written without {} or return if it only has one statement.
-let shortHello = () => "Hello World!";
-
-// Arrow function with parameter.
-let helloParam = (val) => "Hello " + val;
-
-// Arrow function with parameter can be written without parentheses () if it only has one parameter.
-let shortHelloParam = val => "Hello " + val;
-
-// With arrow functions, the 'this' keyword always represents the object that defined the arrow function.
-// In example below 'this' always refers to Header object no matter who called the function (window, button etc.)
-class Header {
-  constructor() {
-    this.color = "Red";
-  }
-
-  changeColor = () => {
-    document.getElementById("demo").innerHTML += this;
-  }
-}
-
-// -------------------------------------------------------------------------------------------------------------
-// ARRAY METHOD .map()
-// -------------------------------------------------------------------------------------------------------------
-// The .map() method allows you to run a function on each item in the array
-
-const myArray = ['apple', 'banana', 'orange'];
-
-// .map() method used to make a list from the above array.
-const myList = myArray.map((item) => <li>{item}</li>)
 
 // -------------------------------------------------------------------------------------------------------------
 // DESTRUCTURING
@@ -327,6 +445,54 @@ function myVehicle2({ model, registration: { state } }) {
 }
 
 // -------------------------------------------------------------------------------------------------------------
+// ROUTER
+// -------------------------------------------------------------------------------------------------------------
+
+
+
+// -------------------------------------------------------------------------------------------------------------
+// ARROW FUNCTIONS
+// -------------------------------------------------------------------------------------------------------------
+
+// Arrow function syntax. Instead of hello = function() {... or function hello() {...
+let hello = () => {
+  return "Hello World!";
+}
+
+// Arrow function can be written without {} or return if it only has one statement.
+let shortHello = () => "Hello World!";
+
+// Arrow function with parameter.
+let helloParam = (val) => "Hello " + val;
+
+// Arrow function with parameter can be written without parentheses () if it only has one parameter.
+let shortHelloParam = val => "Hello " + val;
+
+// With arrow functions, the 'this' keyword always represents the object that defined the arrow function.
+// In example below 'this' always refers to Header object no matter who called the function (window, button etc.)
+class Header {
+  constructor() {
+    this.color = "Red";
+  }
+
+  changeColor = () => {
+    document.getElementById("demo").innerHTML += this;
+  }
+}
+
+// -------------------------------------------------------------------------------------------------------------
+// TERNARY OPERATOR
+// -------------------------------------------------------------------------------------------------------------
+
+let authenticated = true;
+let renderApp = () => "App Rendered";
+let renderLogin = () => "Login Rendered";
+
+// The ternary operator is a simplified conditional operator like if / else.
+// Syntax: condition ? <expression if true> : <expression if false>
+authenticated ? renderApp() : renderLogin();
+
+// -------------------------------------------------------------------------------------------------------------
 // SPREAD OPERATOR
 // -------------------------------------------------------------------------------------------------------------
 
@@ -360,34 +526,6 @@ console.log(myUpdatedVehicle);
 // Check the result object in the console. Notice the properties that did not match were
 // combined, but the property that did match, color, was overwritten by the last object
 // that was passed, updateMyVehicle. The resulting color is now yellow.
-
-// -------------------------------------------------------------------------------------------------------------
-// MODULES
-// -------------------------------------------------------------------------------------------------------------
-
-// Named Exports - You can export a function or variable from any file. I have
-// created a file named person.js, and filled it with things we want to export.
-
-// Default Exports - I have created another file, named message.js, and used it for
-// demonstrating default export. You can only have one default export in a file.
-
-// See top of file for imports.
-
-// -------------------------------------------------------------------------------------------------------------
-// TERNARY OPERATOR
-// -------------------------------------------------------------------------------------------------------------
-
-let authenticated = true;
-let renderApp = () => "App Rendered";
-let renderLogin = () => "Login Rendered";
-
-// The ternary operator is a simplified conditional operator like if / else.
-// Syntax: condition ? <expression if true> : <expression if false>
-authenticated ? renderApp() : renderLogin();
-
-
-
-
 
 
 
