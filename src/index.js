@@ -117,6 +117,78 @@ function Garage() {
 // -------------------------------------------------------------------------------------------------------------
 // EVENTS
 // -------------------------------------------------------------------------------------------------------------
+// React events are written in camelCase, unlike HTML.
+// React event handlers are written inside curly brackets, unlike HTML.
+// onClick={shoot}  instead of onclick="shoot()"
+
+function Football() {
+  // No args: const shoot = () => {
+  // Args: const shoot = (a) => {
+  const shoot = (a, b) => {
+    // alert("Great Shot!");
+    alert(a); // Goal!
+    alert(b.type); // b.type = click. b = [object Object]
+  }
+
+  return (
+    // No args: <button onClick={shoot}>Take the shot!</button>
+    // Args: <button onClick={() => shoot("Goal!")}>Take the shot!</button>
+    <button onClick={(event) => shoot("Goal!", event)}>Take the shot!</button> // Args + event
+  );
+}
+
+// -------------------------------------------------------------------------------------------------------------
+// CONDITIONAL RENDERING
+// -------------------------------------------------------------------------------------------------------------
+
+function MissedGoal() {
+  return <h1>MISSED!</h1>;
+}
+
+function MadeGoal() {
+  return <h1>Goal!</h1>;
+}
+
+function Goal(props) {
+  const isGoal = props.isGoal;
+  if (isGoal) {
+    return <MadeGoal />;
+  }
+  return <MissedGoal />;
+}
+
+// root.render(<Goal isGoal={false} />);
+
+// Using the && operator
+function ConditionalGarage(props) {
+  const cars = props.cars;
+  return (
+    <>
+      <h1>Garage</h1>
+      {cars.length > 0 && // If cars.length > 0, the expression after && will render.
+        <h2>
+          You have {cars.length} cars in your garage.
+        </h2>
+      }
+    </>
+  );
+}
+
+//const cars = ['Ford', 'BMW', 'Audi'];
+//root.render(<ConditionalGarage cars={cars} />);
+
+// Using the ternary operator.
+function Goal2(props) {
+  const isGoal = props.isGoal;
+  return (
+    <>
+      {isGoal ? <MadeGoal /> : <MissedGoal />}
+    </>
+  );
+}
+
+// root.render(<Goal isGoal={false} />);
+
 
 
 
@@ -341,6 +413,7 @@ function App() {
       {helloParam("Liam!")}<br />
       {shortHelloParam("Liam!")}<br />
       <ol>{myList}</ol>
+      <Football />
     </>
   );
 }
