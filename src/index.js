@@ -6,14 +6,65 @@ import { name, age } from "./person.js";
 import message from "./message.js";
 
 // -------------------------------------------------------------------------------------------------------------
-// VARIABLES
+// VARIABLES / JSX
 // -------------------------------------------------------------------------------------------------------------
 
 // Variable containing an HTML element written with JSX. JSX allows us to write HTML directly in JS code.
-const elementWithJSX = <h3>I use JSX!</h3>;
+const elementWithJSX = <h2>I use JSX!</h2>;
 
 // Variable containing an HTML element written without JSX.
 const elementWithoutJSX = React.createElement('h3', {}, 'I do not use JSX!');
+
+// With JSX you can write expressions inside curly braces { }. The expression
+// can be a React variable, or property, or any other valid JavaScript expression.
+// JSX will execute the expression and return the result.
+const expressionElement = <h4>React is {5 + 5} times better with JSX!</h4>;
+
+// To write HTML on multiple lines, put the HTML inside parentheses.
+const fruitBowl = (
+  <ul>
+    <li>Apples</li>
+    <li>Bananas</li>
+    <li>Cherries</li>
+  </ul>
+);
+
+// The HTML code must be wrapped in ONE top level element. So if you like to write
+// two paragraphs, you must put them inside a parent element, like a div element.
+const wrap = (
+  <div>
+    <p>I am a paragraph.</p>
+    <p>I am a paragraph too.</p>
+  </div>
+);
+
+// Alternatively, you can use a "fragment" to wrap multiple lines. This will prevent
+// unnecessarily adding extra nodes to the DOM. A fragment looks like an empty HTML tag: <></>.
+const fragmentWrap = (
+  <>
+    <p>I am a paragraph.</p>
+    <p>I am a paragraph too.</p>
+  </>
+);
+
+// JSX follows XML rules, and therefore HTML elements must be properly closed with '/>'.
+const closed = <input type="text" />;
+
+// Use attribute className instead. 'Class' keyword is reserved.
+const className = <h1 className="myclass">Hello World</h1>;
+
+// To be able to use conditional statements in JSX, you should put the if statements outside of the JSX.
+const x = 5;
+let text = "Goodbye";
+
+if (x < 10) {
+  text = "Hello";
+}
+
+const conditional = <h1>{text}</h1>;
+
+// Or you could use a ternary expression inside JSX.
+const myElement = <h1>{(x) < 10 ? "Hello" : "Goodbye"}</h1>;
 
 // -------------------------------------------------------------------------------------------------------------
 // CLASSES
@@ -196,8 +247,17 @@ console.log(myUpdatedVehicle);
 
 // See top of file for imports.
 
+// -------------------------------------------------------------------------------------------------------------
+// TERNARY OPERATOR
+// -------------------------------------------------------------------------------------------------------------
 
+let authenticated = true;
+let renderApp = () => "App Rendered";
+let renderLogin = () => "Login Rendered";
 
+// The ternary operator is a simplified conditional operator like if / else.
+// Syntax: condition ? <expression if true> : <expression if false>
+authenticated ? renderApp() : renderLogin();
 
 
 
@@ -210,6 +270,8 @@ function App() {
       {title}
       {elementWithJSX}
       {elementWithoutJSX}
+      {expressionElement}
+      {fruitBowl}
       {myCar.info()}<br />
       {myCar.show()}<br />
       {hello()}<br />
