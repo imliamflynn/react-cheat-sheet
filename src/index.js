@@ -102,6 +102,63 @@ class GrossComponent extends React.Component {
 // See top of file for imports.
 
 // -------------------------------------------------------------------------------------------------------------
+// MEMO
+// -------------------------------------------------------------------------------------------------------------
+// Using memo will cause React to skip rendering a component if its props have not changed.
+// This can improve performance.
+
+// Without the memos keyword, the below example re-renders the Todos when the increment
+// button is clicked. With the Todos component export wrapped with memo, Todos only
+// re-renders when the todos that are passed to it through props are updated.
+/*
+index.js:
+import { useState } from "react";
+import ReactDOM from "react-dom/client";
+import Todos from "./Todos";
+
+const App = () => {
+  const [count, setCount] = useState(0);
+  const [todos, setTodos] = useState(["todo 1", "todo 2"]);
+
+  const increment = () => {
+    setCount((c) => c + 1);
+  };
+
+  return (
+    <>
+      <Todos todos={todos} />
+      <hr />
+      <div>
+        Count: {count}
+        <button onClick={increment}>+</button>
+      </div>
+    </>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+
+Todos.js:
+import { memo } from "react";
+
+const Todos = ({ todos }) => {
+  console.log("child render");
+  return (
+    <>
+      <h2>My Todos</h2>
+      {todos.map((todo, index) => {
+        return <p key={index}>{todo}</p>;
+      })}
+    </>
+  );
+};
+
+export default memo(Todos); // Previous code: export default Todos;
+*/
+
+// -------------------------------------------------------------------------------------------------------------
 // PROPS (PROPERTIES)
 // -------------------------------------------------------------------------------------------------------------
 // Props are arguments passed into React components.
@@ -465,7 +522,6 @@ src\pages\:
 Each file will contain a very basic React component.
 
 Now we will use our Router in our index.js file:
-
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
@@ -508,7 +564,6 @@ Anytime we link to an internal path, we will use <Link> instead of <a href="">.
 The "layout route" is a shared component that inserts common content on all pages, such as a navigation menu.
 
 Layout.js:
-
 import { Outlet, Link } from "react-router-dom";
 
 const Layout = () => {
@@ -537,7 +592,6 @@ export default Layout;
 
 
 Home.js:
-
 const Home = () => {
   return <h1>Home</h1>;
 };
@@ -546,71 +600,11 @@ export default Home;
 
 
 NoPage.js:
-
 const NoPage = () => {
   return <h1>404</h1>;
 };
 
 export default NoPage;
-*/
-
-// -------------------------------------------------------------------------------------------------------------
-// MEMO
-// -------------------------------------------------------------------------------------------------------------
-// Using memo will cause React to skip rendering a component if its props have not changed.
-// This can improve performance.
-
-// Without the memos keyword, the below example re-renders the Todos when the increment
-// button is clicked. With the Todos component export wrapped with memo, Todos only
-// re-renders when the todos that are passed to it through props are updated.
-/*
-index.js:
-
-import { useState } from "react";
-import ReactDOM from "react-dom/client";
-import Todos from "./Todos";
-
-const App = () => {
-  const [count, setCount] = useState(0);
-  const [todos, setTodos] = useState(["todo 1", "todo 2"]);
-
-  const increment = () => {
-    setCount((c) => c + 1);
-  };
-
-  return (
-    <>
-      <Todos todos={todos} />
-      <hr />
-      <div>
-        Count: {count}
-        <button onClick={increment}>+</button>
-      </div>
-    </>
-  );
-};
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
-
-
-Todos.js:
-
-import { memo } from "react";
-
-const Todos = ({ todos }) => {
-  console.log("child render");
-  return (
-    <>
-      <h2>My Todos</h2>
-      {todos.map((todo, index) => {
-        return <p key={index}>{todo}</p>;
-      })}
-    </>
-  );
-};
-
-export default memo(Todos); // Previous code: export default Todos;
 */
 
 // -------------------------------------------------------------------------------------------------------------
@@ -690,7 +684,69 @@ console.log(myUpdatedVehicle);
 // combined, but the property that did match, color, was overwritten by the last object
 // that was passed, updateMyVehicle. The resulting color is now yellow.
 
+// -------------------------------------------------------------------------------------------------------------
+// CSS WITH REACT
+// -------------------------------------------------------------------------------------------------------------
 
+// To style an element with the inline style attribute, the value must be a JavaScript object.
+// Note: In JSX, JavaScript expressions are written inside curly braces, and since JavaScript
+// objects also use curly braces, hence two sets of curly braces {{}} below.
+const inline = <h1 style={{ color: "red" }}>Hello Style!</h1>;
+
+// Properties with hyphen seperators become camel case.
+// Use backgroundColor instead of background-color.
+const camel = <h1 style={{ backgroundColor: "lightblue" }}>Hello Style!</h1>
+
+// You can also create an object with styling information, and refer to it in the style attribute.
+const StyleHeader = () => {
+  const myStyle = {
+    color: "white",
+    backgroundColor: "DodgerBlue",
+    padding: "10px",
+    fontFamily: "Sans-Serif"
+  };
+  return (
+    <>
+      <h1 style={myStyle}>Hello Style!</h1>
+      <p>Add a little style!</p>
+    </>
+  );
+}
+
+// You can use external stylesheets like with HTML. Make sure to import the file e.g.:
+// import './App.css';
+
+/*
+Another way of adding styles to your application is to use CSS Modules.
+CSS Modules are convenient for components that are placed in separate files.
+The CSS inside a module is available only for the component that imported it, and you
+do not have to worry about name conflicts.
+Create the CSS module with the .module.css extension, example: my-style.module.css.
+
+my-style.module.css:
+.bigblue {
+  color: DodgerBlue;
+  padding: 40px;
+  font-family: Sans-Serif;
+  text-align: center;
+}
+
+Car.js:
+import styles from './my-style.module.css'; 
+
+const Car = () => {
+  return <h1 className={styles.bigblue}>Hello Car!</h1>;
+}
+
+export default Car;
+
+index.js:
+import ReactDOM from 'react-dom/client';
+import Car from './Car.js';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Car />);
+*/
 
 const title = <h1>React Cheat Sheet</h1>;
 
