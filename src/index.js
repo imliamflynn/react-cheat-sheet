@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, createContext, useContext, memo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { name, age } from "./person.js"; // Named exports must be destructured using curly braces.
 import message from "./message.js"; // Default exports do not.
@@ -110,8 +110,9 @@ class GrossComponent extends React.Component {
 // 2. Hooks can only be called at the top level of a component.
 // 3. Hooks cannot be conditional.
 
-// The useState Hook: State generally refers to application data
-// or properties that need to be tracked.
+// USE STATE HOOK
+
+// State generally refers to application data or properties that need to be tracked.
 // We initialize our state by calling useState at the top of our component.
 function FavoriteColor() {
   // useState accepts an initial state and returns two values:
@@ -198,7 +199,9 @@ function CarHook2() {
   )
 }
 
-// The useEffect Hook: Allows you to perform side effect in components. Ex: fetching data,
+// USE EFFECT HOOK
+
+// The useEffect Hook allows you to perform side effect in components. Ex: fetching data,
 // directly updating DOM, and timers. useEffect accepts two arguments. The second argument
 // is optional. useEffect(<function>, <dependency>)
 
@@ -257,6 +260,52 @@ function Timer() {
   return <h1>I've rendered {count} times!</h1>;
 }
 
+// CREATE CONTEXT HOOK
+
+// React Context is a way to manage state globally.
+
+// To create context, you must Import createContext and initialize it.
+const UserContext = createContext();
+
+// Next we'll use the Context Provider to wrap the tree of components that need the state
+// context. Wrap child components in the Context Provider and supply the state value.
+function Component1() {
+  const [user, setUser] = useState("Jesse Hall");
+
+  return (
+    <UserContext.Provider value={user}>
+      <h1>Component 1</h1>
+      <h2>{`Hello ${user}!`}</h2>
+      <Component2 user={user} />
+    </UserContext.Provider>
+  ); // Now, all components in this tree will have access to the user Context.
+}
+
+function Component2({ user }) {
+  return (
+    <>
+      <h1>Component 2</h1>
+      <Component5 />
+    </>
+  );
+}
+
+// USE CONTEXT HOOK
+
+// In order to use the Context in a child component, we need to access it using the
+// useContext Hook. First, include the useContext in the import statement.
+
+// Then you can access the user Context in all components:
+function Component5() {
+  const user = useContext(UserContext);
+
+  return (
+    <>
+      <h1>Component 5</h1>
+      <h2>{`Hello ${user} again!`}</h2>
+    </>
+  );
+}
 
 // -------------------------------------------------------------------------------------------------------------
 // MEMO
@@ -501,7 +550,7 @@ function MultipleInputFieldsForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert(inputs);
+    alert(inputs.username + " " + inputs.age);
   }
 
   return (
@@ -922,6 +971,8 @@ function App() {
       <GrossComponent />
       <Supermarket brand="Pak n Save" />
       <FavoriteColor /><br />
+      <Component1 />
+      <MultipleInputFieldsForm />
       {myCar.info()}<br />
       {myCar.show()}<br />
       {hello()}<br />
