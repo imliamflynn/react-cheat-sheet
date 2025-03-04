@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { name, age } from "./person.js"; // Named exports must be destructured using curly braces.
 import message from "./message.js"; // Default exports do not.
 import Comp from "./Comp.js"; // Component in seperate file.
-import { useState } from 'react';
-import { memo } from "react";
 
 // -------------------------------------------------------------------------------------------------------------
 // VARIABLES / JSX
@@ -100,6 +98,165 @@ class GrossComponent extends React.Component {
 // demonstrating default export. You can only have one default export in a file.
 
 // See top of file for imports.
+
+// -------------------------------------------------------------------------------------------------------------
+// HOOKS
+// -------------------------------------------------------------------------------------------------------------
+// Hooks allow function components to "hook" into React features such as state
+// and lifecycle methods. You must import Hooks from react.
+
+// Hook Rules:
+// 1. Hooks can only be called inside React function components.
+// 2. Hooks can only be called at the top level of a component.
+// 3. Hooks cannot be conditional.
+
+// The useState Hook: State generally refers to application data
+// or properties that need to be tracked.
+// We initialize our state by calling useState at the top of our component.
+function FavoriteColor() {
+  // useState accepts an initial state and returns two values:
+  // - The current state. 'color'
+  // - A function that updates the state. 'setColor'
+  const [color, setColor] = useState(""); // Destructuring color and setColor.
+
+  // We then use the state in our rendered component.
+  // To update the state, we use our state updater function. Never directly
+  // update state. Ex: color = "red". It is not allowed.
+  return (
+    <>
+      <h1>My favorite color is {color}!</h1>
+      <button
+        type="button"
+        onClick={() => setColor("blue")}
+      >Blue</button>
+      <button
+        type="button"
+        onClick={() => setColor("red")}
+      >Red</button>
+      <button
+        type="button"
+        onClick={() => setColor("pink")}
+      >Pink</button>
+      <button
+        type="button"
+        onClick={() => setColor("green")}
+      >Green</button>
+    </>
+  );
+}
+
+// We can store an object in state. Need to reference object.property.
+function CarHook() {
+  const [car, setCar] = useState({
+    brand: "Ford",
+    model: "Mustang",
+    year: "1964",
+    color: "red"
+  });
+
+  return (
+    <>
+      <h1>My {car.brand}</h1>
+      <p>
+        It is a {car.color} {car.model} from {car.year}.
+      </p>
+    </>
+  )
+}
+
+// When state is updated, the entire state gets overwritten. What if we only want to update the
+// color of our car? If we only called setCar({color: "blue"}), this would remove the brand, model,
+// and year from our state. We can use the spread operator to help.
+function CarHook2() {
+  const [car, setCar] = useState({
+    brand: "Ford",
+    model: "Mustang",
+    year: "1964",
+    color: "red"
+  });
+
+  // Because we need the current value of state, we pass a function into our setCar function. This
+  // function receives the previous value. We then return an object, spreading the previousState
+  // and overwriting only the color.
+  const updateColor = () => {
+    setCar(previousState => {
+      return { ...previousState, color: "blue" }
+    });
+  }
+
+  return (
+    <>
+      <h1>My {car.brand}</h1>
+      <p>
+        It is a {car.color} {car.model} from {car.year}.
+      </p>
+      <button
+        type="button"
+        onClick={updateColor}
+      >Blue</button>
+    </>
+  )
+}
+
+// The useEffect Hook: Allows you to perform side effect in components. Ex: fetching data,
+// directly updating DOM, and timers. useEffect accepts two arguments. The second argument
+// is optional. useEffect(<function>, <dependency>)
+
+// No dependency passed:
+function Example1() {
+  useEffect(() => {
+    // Runs on every render
+  });
+}
+
+function Example2() {
+  useEffect(() => {
+    // Runs only on the first render.
+  }, []);
+}
+
+function Example3() {
+  let num1, num2 = 0;
+  useEffect(() => {
+    // Runs on the first render, and any time any dependency value changes.
+  }, [num1, num2]); // Can have 1 or many dependencies.
+}
+
+// Renders once, then anytime count is updated by clicking the button.
+function Counter() {
+  const [count, setCount] = useState(0);
+  const [calculation, setCalculation] = useState(0);
+
+  useEffect(() => {
+    setCalculation(() => count * 2);
+  }, [count]); // <- If there are multiple dependencies, include them in the dependency array.
+
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
+      <p>Calculation: {calculation}</p>
+    </>
+  );
+}
+
+// Some effects require cleanup to reduce memory leaks. Timeouts, subscriptions, event listeners,
+// and other effects that are no longer needed should be disposed. We do this by including a
+// return function at the end of the useEffect Hook.
+function Timer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+
+    return () => clearTimeout(timer)
+  }, []);
+
+  return <h1>I've rendered {count} times!</h1>;
+}
+
 
 // -------------------------------------------------------------------------------------------------------------
 // MEMO
@@ -754,6 +911,7 @@ const title = <h1>React Cheat Sheet</h1>;
 function App() {
   return (
     <>
+      <div id="root2"></div>
       {title}
       {elementWithJSX}
       {elementWithoutJSX}
@@ -763,6 +921,7 @@ function App() {
       <Comp />
       <GrossComponent />
       <Supermarket brand="Pak n Save" />
+      <FavoriteColor /><br />
       {myCar.info()}<br />
       {myCar.show()}<br />
       {hello()}<br />
