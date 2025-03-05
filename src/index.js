@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, memo } from 'react';
+import React, { useState, useEffect, createContext, useContext, useRef, memo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { name, age } from "./person.js"; // Named exports must be destructured using curly braces.
 import message from "./message.js"; // Default exports do not.
@@ -374,6 +374,10 @@ function PreviousStateApp() {
     </>
   );
 }
+
+// USE REDUCER HOOK
+
+
 
 // -------------------------------------------------------------------------------------------------------------
 // MEMO
